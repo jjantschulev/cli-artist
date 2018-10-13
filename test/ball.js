@@ -6,8 +6,8 @@ class Ball {
         this.speed = 0;
         this.acc = 0.3;
     }
-    
-    show () {
+
+    show() {
         engine.fillBackground('cyan'); // change the ball's colour
         engine.fillForeground('cyan'); // change the ball's colour
         engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
@@ -46,4 +46,4 @@ const draw = () => {
     })
 }
 
-engine = engine(setup, draw) // Initialise the engine
+engine = engine(setup, draw, 20) // Initialise the engine

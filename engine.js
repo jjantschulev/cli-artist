@@ -83,7 +83,7 @@ let renderMatrix = function () {
         for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width - 1); x++) {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
-            
+
             if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg) {
                 if (matrix[y][x].value) {
                     string += matrix[y][x].value
@@ -95,7 +95,7 @@ let renderMatrix = function () {
             } else {
                 string += matrix[y][x].value || ' ';
             }
-            
+
             lastBGColor = matrix[y][x].bg;
             lastFGColor = matrix[y][x].fg;
         }
@@ -128,7 +128,7 @@ funcs.drawCircle = function (x, y, r, value) {
 
     var px, py;
 
-    for (let d = r; d > 0; d-= 0.5) {
+    for (let d = r; d > 0; d -= 0.5) {
         for (let i = 0; i < d * 36; i++) {
             px = Math.round((Math.sin(i) * d * 1.95) + x);
             py = Math.round(Math.cos(i) * d + y);
@@ -179,7 +179,7 @@ funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-    else clr = ""
+        else clr = ""
 
     fg = clr;
 }
@@ -187,7 +187,7 @@ funcs.fillBackground = function (colour) {
     let clr = backgroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-    else clr = ""
+        else clr = ""
 
     bg = clr;
 }
@@ -200,9 +200,10 @@ funcs.noFg = function () {
     process.stdout.write('\u001b[0m')
 }
 
-module.exports = function (s, d) {
+module.exports = function (s, d, f) {
     setup = s;
     draw = d;
+    var frameRate = f || 30;
 
     process.stdout.write('\033[?25h')
     setup();
@@ -211,7 +212,7 @@ module.exports = function (s, d) {
         funcs.clear();
         draw();
         renderMatrix();
-    }, 30);
+    }, 1000 / frameRate);
 
     return funcs;
 }
