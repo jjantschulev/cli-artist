@@ -53,17 +53,22 @@ let backgroundColours = {
     lightwhite: "\u001b[47;1m"
 }
 
-let bg = "", fg = "";
+let bg = "",
+    fg = "";
 
 let createMatrix = function () {
     funcs.width = process.stdout.columns;
     funcs.height = process.stdout.rows - 1;
 
     matrix = [];
-    for (let i = 0; i < funcs.height; i++) {
+    for (let i = 0; i < funcs.height - 1; i++) {
         matrix[i] = [];
-        for (let j = 0; j < funcs.width; j++) {
-            matrix[i][j] = {value: '', fg: '', bg: ''};
+        for (let j = 0; j < funcs.width - 1; j++) {
+            matrix[i][j] = {
+                value: '',
+                fg: '',
+                bg: ''
+            };
 
         }
     }
@@ -71,29 +76,41 @@ let createMatrix = function () {
 
 let lastFGColor, lastBGColor;
 let renderMatrix = function () {
-    let string = "\u001b[0m";
-    for (let y = 0; y < matrix.length; y++) {
-        for (let x = 0; x < matrix[y].length; x++) {
+    let string = "\033[?25h";
+    for (let y = 0; y < funcs.constrain(matrix.length, 0, funcs.height - 1); y++) {
+        string += "\n"
+        for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width - 1); x++) {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
-            string += matrix[y][x].value || ' ';
             
-            if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg)
-                string += "\u001b[0m"
+            if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg) {
+                if (matrix[y][x].value) {
+                    string += matrix[y][x].value
+                    string += "\u001b[0m"
+                } else {
+                    string += "\u001b[0m"
+                    string += " "
+                }
+            } else {
+                string += matrix[y][x].value || ' ';
+            }
             
             lastBGColor = matrix[y][x].bg;
             lastFGColor = matrix[y][x].fg;
-
         }
     }
-    process.stdout.write('\033[2J') // move cursor to 0, 0
+    process.stdout.write('\033[0;0H') // move cursor to 0, 0
     process.stdout.write(string); // print contents of matrix
 }
 
 funcs.clear = function () {
-    for (let y = 0; y < funcs.height; y++) {
-        for (let x = 0; x < funcs.width; x++) {
-            matrix[y][x] = {value: '', fg: '', bg: ''};
+    for (let y = 0; y < funcs.height - 1; y++) {
+        for (let x = 0; x < funcs.width - 1; x++) {
+            matrix[y][x] = {
+                value: '',
+                fg: '',
+                bg: ''
+            };
         }
     }
 }
@@ -106,9 +123,31 @@ funcs.drawRect = function (x, y, w, h, value) {
     }
 }
 
+funcs.drawEllipse = function (x, y, r, value) {
+
+    var px, py;
+
+    for (let d = r; d > 0; d-= 0.5) {
+        for (let i = 0; i < d * 36; i++) {
+            px = Math.round((Math.sin(i) * d * 1.95) + x);
+            py = Math.round(Math.cos(i) * d + y);
+            funcs.drawPoint(px, py, value);
+        }
+    }
+
+}
+
+funcs.loop = function (n, min, max) {
+    return (n < min) ? max - Math.abs(n % max) : n % max
+}
+
 funcs.drawPoint = function (x, y, value) {
-    if (y >= 0 && y < funcs.height && x >= 0 && x < funcs.width) {
-        matrix[funcs.constrain(y, 0, funcs.height)][funcs.constrain(x, 0, funcs.width)] = {value: value[0], fg: fg || "", bg: bg || ""};
+    if (y >= 0 && y < funcs.height - 1 && x >= 0 && x < funcs.width - 1) {
+        matrix[funcs.constrain(y, 0, funcs.height - 1)][funcs.constrain(x, 0, funcs.width - 1)] = {
+            value: value[0],
+            fg: fg || "",
+            bg: bg || ""
+        };
     }
 }
 
@@ -124,20 +163,24 @@ funcs.constrain = function (x, min, max) {
     return x < min ? min : x > max ? max : x;
 }
 
+funcs.map = function (n, start1, stop1, start2, stop2) {
+    return (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+}
 
-funcs.fillForeground = function(colour) {
+
+funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-        else clr = ""
+    else clr = ""
 
     fg = clr;
 }
-funcs.fillBackground = function(colour) {
+funcs.fillBackground = function (colour) {
     let clr = backgroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-        else clr = ""
+    else clr = ""
 
     bg = clr;
 }
@@ -166,7 +209,7 @@ module.exports = function (s, d) {
 }
 
 process.on('SIGINT', e => {
-    process.stdout.write('\033[2J\u001b[0m\033[?25l'); 
-    require('child_process').exec(process.platform == "win32" ? "cls" : "clear"); 
+    process.stdout.write('\033[2J\u001b[0m\033[?25l');
+    require('child_process').exec(process.platform == "win32" ? "cls" : "clear");
     process.exit();
 })

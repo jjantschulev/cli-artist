@@ -12,6 +12,7 @@ class Ball {
         engine.fillBackground('cyan'); // change the ball's colour
         engine.fillForeground('cyan'); // change the ball's colour
         engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
+        engine.drawPoint(Math.floor(this.x + 1), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
         // engine.noFill();
     }
     update () {
