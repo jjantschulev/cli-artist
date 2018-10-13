@@ -29,7 +29,7 @@ The `setup` and `draw` parameters are required functions. The `setup` function r
 * `engine.drawLine(<x>, <y>, <x_dir>, <y_dir>, <length>, <char>)`  
    Draws a line from (x, y) at angle (x_dir, y_dir) for `length` characters of `char` characters
 
-* `engine.drawCircle(<x>, <y>, <r>, <char>)`
+* `engine.drawCircle(<x>, <y>, <r>, <char>)`  
     Draws a (sort-of) perfect circle at (x, y) with a radius of `r` of character `char`
 
 * `engine.constrain(<n>, <min>, <max>)`  
