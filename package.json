@@ -1,0 +1,20 @@
+{
+  "name": "stdout-rendering",
+  "version": "1.0.0",
+  "main": "engine.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraken22/stdout-rendering.git"
+  },
+  "author": "Jordan Jantschulev <j.jantschulev@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kraken22/stdout-rendering/issues"
+  },
+  "homepage": "https://github.com/kraken22/stdout-rendering#readme",
+  "keywords": [],
+  "description": ""
+}
