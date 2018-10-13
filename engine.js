@@ -191,7 +191,7 @@ funcs.fillBackground = function (colour) {
 
     bg = clr;
 }
-funcs.noGg = function () {
+funcs.noBg = function () {
     bg = ""
     process.stdout.write('\u001b[0m')
 }

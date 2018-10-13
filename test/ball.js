@@ -38,6 +38,7 @@ const setup = () => {
 
 const draw = () => {
     engine.fillForeground('red');
+    engine.noBg();
     engine.drawText(1, 1, "Balls Bouncing");
     b.forEach(ball => { // update and show each ball
         ball.show();
