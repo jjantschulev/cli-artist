@@ -162,7 +162,7 @@ funcs.drawLine = function (x, y, dirX, dirY, length, value) {
 
 funcs.drawText = function (x, y, text) {
     for (var i = 0; i < text.length; i++) {
-        this.drawPoint(x + i, y, text.charAt(i));
+        funcs.drawPoint(x + i, y, text.charAt(i));
     }
 }
 
