@@ -1,6 +1,4 @@
-let engine = require('../engine_backup');
-const fs = require('fs');
-const path = require('path');
+let engine = require('../engine'); // this doesn't need explaining ^_^.
 
 class Ball {
     constructor(startX, startY) {
@@ -11,29 +9,31 @@ class Ball {
     }
     
     show () {
-        engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "o");
+        engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "o"); // Draw an * at this.x and this.y.
     }
     update () {
+        // =- <PHYSICS> -= //
+
         if (this.y > engine.height) {
-            this.speed *= -1;
+            this.speed *= -1; 
             this.y = engine.height;
         }
         this.speed += this.acc;
         this.y += this.speed;
 
-        // this.y = engine.constrain(this.y, 0, engine.height - 1)
+        // =- </PHYSICS> -= //
     }
 }
 
 let b;
 
 const setup = () => {
-    b = new Ball(10, 10);
+    b = new Ball(10, 10); // Create a new ball.
 }
 
 const draw = () => {
-    b.update();
-    b.show();
+    b.update(); // Calculate the ball's new position.
+    b.show(); // Display the ball.
 }
 
-engine = engine(setup, draw)
+engine = engine(setup, draw) // Initialise the engine

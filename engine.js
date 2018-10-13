@@ -16,7 +16,7 @@ funcs.width = process.stdout.columns;
 funcs.height = process.stdout.rows - 1;
 
 
-funcs.createMatrix = function () {
+let createMatrix = function () {
     funcs.width = process.stdout.columns;
     funcs.height = process.stdout.rows - 1;
 
@@ -24,13 +24,13 @@ funcs.createMatrix = function () {
     for (let i = 0; i < funcs.height; i++) {
         matrix[i] = [];
         for (let j = 0; j < funcs.width; j++) {
-            matrix[i][j] = 0;
+            matrix[i][j] = '';
 
         }
     }
 }
 
-funcs.renderMatrix = function () {
+let renderMatrix = function () {
     let string = "";
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[y].length; x++) {
@@ -41,10 +41,10 @@ funcs.renderMatrix = function () {
     process.stdout.write(string); // print contents of matrix
 }
 
-funcs.drawBackground = function () {
+funcs.clear = function () {
     for (let y = 0; y < funcs.height; y++) {
         for (let x = 0; x < funcs.width; x++) {
-            matrix[y][x] = 0;
+            matrix[y][x] = '';
         }
     }
 }
@@ -81,9 +81,9 @@ module.exports = function (s, d) {
 
     setup();
     setInterval(() => {
-        funcs.createMatrix();
+        createMatrix();
         draw();
-        funcs.renderMatrix();
+        renderMatrix();
     }, 30);
 
     return funcs;
