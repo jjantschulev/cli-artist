@@ -124,7 +124,7 @@ funcs.drawRect = function (x, y, w, h, value) {
     }
 }
 
-funcs.drawEllipse = function (x, y, r, value) {
+funcs.drawCircle = function (x, y, r, value) {
 
     var px, py;
 

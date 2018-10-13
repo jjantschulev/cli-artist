@@ -21,16 +21,19 @@ The `setup` and `draw` parameters are required functions. The `setup` function r
 ## Functions
 
 * `engine.drawPoint(<x>, <y>, <char>)`  
-*   Draws a point at (x, y) with the character being defined by `char`
+   Draws a point at (x, y) with the character being defined by `char`
 
 * `engine.drawRect(<x>, <y>, <w>, <h>, <char>)`  
-*   Draws a rectangle at (x, y) with width of `w` and height of `h` out of `char` characters
+   Draws a rectangle at (x, y) with width of `w` and height of `h` out of `char` characters
 
 * `engine.drawLine(<x>, <y>, <x_dir>, <y_dir>, <length>, <char>)`  
-*   Draws a line from (x, y) at angle (x_dir, y_dir) for `length` characters of `char` characters
+   Draws a line from (x, y) at angle (x_dir, y_dir) for `length` characters of `char` characters
+
+* `engine.drawCircle(<x>, <y>, <r>, <char>)`
+    Draws a (sort-of) perfect circle at (x, y) with a radius of `r` of character `char`
 
 * `engine.constrain(<n>, <min>, <max>)`  
-*   Constrains `n` between `min` and `max`
+   Constrains `n` between `min` and `max`
 
 * `engine.clear()`  
     Erases everything for 1 frame

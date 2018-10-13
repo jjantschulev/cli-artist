@@ -7,7 +7,7 @@ const setup = () => {
 const draw = () => {
     engine.fillBackground("red");
     engine.fillForeground("red");
-    engine.drawEllipse(engine.width / 2, engine.height / 2, 20, "o");
+    engine.drawCircle(engine.width / 2, engine.height / 2, 20, "o");
 }
 
 engine = engine(setup, draw) 
