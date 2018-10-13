@@ -4,11 +4,15 @@
 
 let funcs = {}
 
-let setup, draw;
+let setup, draw, keyPressed;
 
 funcs.BOX = "\u2588";
 funcs.CIRCLE = "\u26AA";
 funcs.EMPTY = ' ';
+funcs.UP = '\u001B\u005B\u0041';
+funcs.DOWN = '\u001B\u005B\u0042';
+funcs.LEFT = '\u001B\u005B\u0044';
+funcs.RIGHT = '\u001B\u005B\u0043';
 
 let matrix = []; // Matrix should not be accesible outside engine
 
@@ -200,13 +204,30 @@ funcs.noFg = function () {
     process.stdout.write('\u001b[0m')
 }
 
-module.exports = function (s, d, f) {
+module.exports = function (s, d, k, f) {
     setup = s;
     draw = d;
+    keyPressed = k;
     var frameRate = f || 30;
 
+    // User input start
+    var stdin = process.stdin;
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding('utf8'); // Make it not binary
+    stdin.on('data', function (key) {
+        // ctrl-c ( end of text )
+        if (key === '\u0003') {
+            process.exit();
+        }
+        process.stdout.write(key);
+        keyPressed(key);
+    });
+
+    // User input end
+
     process.stdout.write('\033[?25h')
-    setup();
+    setup(funcs); // pass funcs here so engine can be initialised in setup
     createMatrix();
     setInterval(() => {
         funcs.clear();

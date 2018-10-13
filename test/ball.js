@@ -46,4 +46,8 @@ const draw = () => {
     })
 }
 
-engine = engine(setup, draw, 20) // Initialise the engine
+const keyPressed = (key) => {
+
+}
+
+engine = engine(setup, draw, keyPressed, 20) // Initialise the engine
