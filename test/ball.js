@@ -1,5 +1,4 @@
 let engine = require('../engine'); // this doesn't need explaining ^_^.
-
 class Ball {
     constructor(startX, startY) {
         this.x = startX;
@@ -7,20 +6,30 @@ class Ball {
         this.speed = 0;
         this.acc = 0.3;
     }
+<<<<<<< HEAD
     
     show () {
         engine.fillBackground('cyan'); // change the ball's colour
         engine.fillForeground('cyan'); // change the ball's colour
         engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
         engine.drawPoint(Math.floor(this.x + 1), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
+=======
+
+    show() {
+        this.colour = this.colour ? this.colour : engine.avaliableColors[Math.floor(Math.random() * engine.avaliableColors.length)];
+        // engine.fillBackground('cyan'); // change the ball's colour
+        engine.fillForeground(this.colour); // change the ball's colour
+        // engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
+        engine.drawText(Math.floor(this.x), Math.floor(this.y), "Ball"); // Draw the text 'ball' at this.x and this.y.
+>>>>>>> 47f7dfa5683a4c980b3c99da312fd3407025c2fc
         // engine.noFill();
     }
-    update () {
+    update() {
         // =- <PHYSICS> -= //
 
-        if (this.y > engine.height) {
-            this.speed *= -1; 
-            this.y = engine.height;
+        if (this.y > engine.height - 1) {
+            this.speed *= -1;
+            this.y = engine.height - 1;
         }
         this.speed += this.acc;
         this.y += this.speed;
@@ -32,12 +41,14 @@ class Ball {
 let b = [];
 
 const setup = () => {
-    for (let i = 0; i < 15; i++) { // create 5 balls
+    for (let i = 0; i < 15; i++) { // create 15 balls
         b.push(new Ball(10 * (i + 2), 10 + ((i + 3) * 5))); // Create a new ball.
     }
 }
 
 const draw = () => {
+    engine.fillForeground('red');
+    engine.drawText(1, 1, "Balls Bouncing");
     b.forEach(ball => { // update and show each ball
         ball.show();
         ball.update();
