@@ -1,6 +1,6 @@
 {
-  "name": "stdout-rendering",
-  "version": "1.0.0",
+  "name": "cli-artist",
+  "version": "1.0.1",
   "main": "engine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
