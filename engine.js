@@ -14,6 +14,7 @@ let matrix = []; // Matrix should not be accesible outside engine
 
 funcs.width = process.stdout.columns;
 funcs.height = process.stdout.rows - 1;
+funcs.avaliableColors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'lightblack', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightmagenta', 'lightcyan', 'lightwhite'];
 
 let foregroundColours = {
     black: "\u001b[30m",
@@ -63,7 +64,7 @@ let createMatrix = function () {
     for (let i = 0; i < funcs.height; i++) {
         matrix[i] = [];
         for (let j = 0; j < funcs.width; j++) {
-            matrix[i][j] = {value: '', fg: '', bg: ''};
+            matrix[i][j] = { value: '', fg: '', bg: '' };
 
         }
     }
@@ -77,10 +78,10 @@ let renderMatrix = function () {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
             string += matrix[y][x].value || ' ';
-            
+
             if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg)
                 string += "\u001b[0m"
-            
+
             lastBGColor = matrix[y][x].bg;
             lastFGColor = matrix[y][x].fg;
 
@@ -93,7 +94,7 @@ let renderMatrix = function () {
 funcs.clear = function () {
     for (let y = 0; y < funcs.height; y++) {
         for (let x = 0; x < funcs.width; x++) {
-            matrix[y][x] = {value: '', fg: '', bg: ''};
+            matrix[y][x] = { value: '', fg: '', bg: '' };
         }
     }
 }
@@ -108,7 +109,7 @@ funcs.drawRect = function (x, y, w, h, value) {
 
 funcs.drawPoint = function (x, y, value) {
     if (y >= 0 && y < funcs.height && x >= 0 && x < funcs.width) {
-        matrix[funcs.constrain(y, 0, funcs.height)][funcs.constrain(x, 0, funcs.width)] = {value: value[0], fg: fg || "", bg: bg || ""};
+        matrix[funcs.constrain(y, 0, funcs.height)][funcs.constrain(x, 0, funcs.width)] = { value: value[0], fg: fg || "", bg: bg || "" };
     }
 }
 
@@ -120,12 +121,18 @@ funcs.drawLine = function (x, y, dirX, dirY, length, value) {
     }
 }
 
+funcs.drawText = function (x, y, text) {
+    for (var i = 0; i < text.length; i++) {
+        this.drawPoint(x + i, y, text.charAt(i));
+    }
+}
+
 funcs.constrain = function (x, min, max) {
     return x < min ? min : x > max ? max : x;
 }
 
 
-funcs.fillForeground = function(colour) {
+funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
@@ -133,7 +140,7 @@ funcs.fillForeground = function(colour) {
 
     fg = clr;
 }
-funcs.fillBackground = function(colour) {
+funcs.fillBackground = function (colour) {
     let clr = backgroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
@@ -156,8 +163,9 @@ module.exports = function (s, d) {
 
     process.stdout.write('\033[?25h')
     setup();
+    createMatrix();
     setInterval(() => {
-        createMatrix();
+        funcs.clear();
         draw();
         renderMatrix();
     }, 30);
@@ -166,7 +174,7 @@ module.exports = function (s, d) {
 }
 
 process.on('SIGINT', e => {
-    process.stdout.write('\033[2J\u001b[0m\033[?25l'); 
-    require('child_process').exec(process.platform == "win32" ? "cls" : "clear"); 
+    process.stdout.write('\033[2J\u001b[0m\033[?25l');
+    require('child_process').exec(process.platform == "win32" ? "cls" : "clear");
     process.exit();
 })
