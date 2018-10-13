@@ -9,7 +9,10 @@ class Ball {
     }
     
     show () {
-        engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "o"); // Draw an * at this.x and this.y.
+        engine.fillBackground('cyan'); // change the ball's colour
+        engine.fillForeground('cyan'); // change the ball's colour
+        engine.drawPoint(Math.floor(this.x), Math.floor(this.y), "O"); // Draw an - at this.x and this.y.
+        // engine.noFill();
     }
     update () {
         // =- <PHYSICS> -= //
@@ -25,15 +28,19 @@ class Ball {
     }
 }
 
-let b;
+let b = [];
 
 const setup = () => {
-    b = new Ball(10, 10); // Create a new ball.
+    for (let i = 0; i < 15; i++) { // create 5 balls
+        b.push(new Ball(10 * (i + 2), 10 + ((i + 3) * 5))); // Create a new ball.
+    }
 }
 
 const draw = () => {
-    b.update(); // Calculate the ball's new position.
-    b.show(); // Display the ball.
+    b.forEach(ball => { // update and show each ball
+        ball.show();
+        ball.update();
+    })
 }
 
 engine = engine(setup, draw) // Initialise the engine

@@ -15,6 +15,6 @@
     "url": "https://github.com/kraken22/stdout-rendering/issues"
   },
   "homepage": "https://github.com/kraken22/stdout-rendering#readme",
-  "keywords": [],
-  "description": ""
+  "keywords": ["ANSI", "ASCII ART", "CONSOLE DRAWING", "CHARACTER", "ART", "DRAWING"],
+  "description": "A drawing library for the console."
 }
