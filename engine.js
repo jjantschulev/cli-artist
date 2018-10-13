@@ -64,17 +64,12 @@ let createMatrix = function () {
     matrix = [];
     for (let i = 0; i < funcs.height - 1; i++) {
         matrix[i] = [];
-<<<<<<< HEAD
         for (let j = 0; j < funcs.width - 1; j++) {
             matrix[i][j] = {
                 value: '',
                 fg: '',
                 bg: ''
             };
-=======
-        for (let j = 0; j < funcs.width; j++) {
-            matrix[i][j] = { value: '', fg: '', bg: '' };
->>>>>>> 47f7dfa5683a4c980b3c99da312fd3407025c2fc
 
         }
     }
@@ -88,7 +83,6 @@ let renderMatrix = function () {
         for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width - 1); x++) {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
-<<<<<<< HEAD
             
             if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg) {
                 if (matrix[y][x].value) {
@@ -102,13 +96,6 @@ let renderMatrix = function () {
                 string += matrix[y][x].value || ' ';
             }
             
-=======
-            string += matrix[y][x].value || ' ';
-
-            if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg)
-                string += "\u001b[0m"
-
->>>>>>> 47f7dfa5683a4c980b3c99da312fd3407025c2fc
             lastBGColor = matrix[y][x].bg;
             lastFGColor = matrix[y][x].fg;
         }
@@ -118,7 +105,6 @@ let renderMatrix = function () {
 }
 
 funcs.clear = function () {
-<<<<<<< HEAD
     for (let y = 0; y < funcs.height - 1; y++) {
         for (let x = 0; x < funcs.width - 1; x++) {
             matrix[y][x] = {
@@ -126,11 +112,6 @@ funcs.clear = function () {
                 fg: '',
                 bg: ''
             };
-=======
-    for (let y = 0; y < funcs.height; y++) {
-        for (let x = 0; x < funcs.width; x++) {
-            matrix[y][x] = { value: '', fg: '', bg: '' };
->>>>>>> 47f7dfa5683a4c980b3c99da312fd3407025c2fc
         }
     }
 }
@@ -162,17 +143,12 @@ funcs.loop = function (n, min, max) {
 }
 
 funcs.drawPoint = function (x, y, value) {
-<<<<<<< HEAD
     if (y >= 0 && y < funcs.height - 1 && x >= 0 && x < funcs.width - 1) {
         matrix[funcs.constrain(y, 0, funcs.height - 1)][funcs.constrain(x, 0, funcs.width - 1)] = {
             value: value[0],
             fg: fg || "",
             bg: bg || ""
         };
-=======
-    if (y >= 0 && y < funcs.height && x >= 0 && x < funcs.width) {
-        matrix[funcs.constrain(y, 0, funcs.height)][funcs.constrain(x, 0, funcs.width)] = { value: value[0], fg: fg || "", bg: bg || "" };
->>>>>>> 47f7dfa5683a4c980b3c99da312fd3407025c2fc
     }
 }
 
