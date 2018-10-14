@@ -7,17 +7,25 @@ class Player {
         this.dirX = 1;
         this.dirY = 0;
         this.tail = [{ x: 4, y: 5 }];
+        this.dirs = [];
     }
 
     show() {
-        engine.fillForeground('white');
+        engine.fillForeground('blue');
         engine.drawPoint(this.x, this.y, engine.BOX);
+        engine.fillForeground('cyan');
         this.tail.forEach(point => {
             engine.drawPoint(point.x, point.y, engine.BOX);
         })
     }
 
     update() {
+        if (this.dirs.length > 0) {
+            this.dirX = this.dirs[0].x;
+            this.dirY = this.dirs[0].y;
+            this.dirs.splice(0, 1);
+        }
+
         for (let i = this.tail.length - 1; i >= 1; i--) {
             this.tail[i].x = this.tail[i - 1].x;
             this.tail[i].y = this.tail[i - 1].y;
@@ -30,7 +38,18 @@ class Player {
 
         if (this.x == food.x && this.y == food.y) {
             food = new Food();
-            this.tail.push({ x: this.tail[this.tail.length - 1].x, y: this.tail[this.tail.length - 1].y })
+            for (let i = 0; i < 5; i++) {
+                this.tail.push({ x: this.tail[this.tail.length - 1].x, y: this.tail[this.tail.length - 1].y })
+            }
+        }
+
+        for (let i = 0; i < this.tail.length; i++) {
+            if (this.x == this.tail[i].x && this.y == this.tail[i].y) {
+                player = new Player();
+            }
+        }
+        if (this.x <= 0 || this.x >= engine.width - 1 || this.y <= 0 || this.y >= engine.height - 1) {
+            player = new Player;
         }
     }
 }
@@ -38,8 +57,8 @@ class Player {
 class Food {
 
     constructor() {
-        this.x = Math.floor(Math.random() * engine.width);
-        this.y = Math.floor(Math.random() * engine.height);
+        this.x = Math.floor(Math.random() * (engine.width - 2)) + 1;
+        this.y = Math.floor(Math.random() * (engine.height - 2)) + 1;
     }
 
     show() {
@@ -60,27 +79,31 @@ function setup(e) {
 }
 
 function draw() {
+    engine.fillBackground('yellow');
+    engine.fillForeground('yellow');
+    engine.drawBorder(engine.BOX);
+    engine.fillForeground('green');
+    engine.noBg();
+    engine.drawText(2, 0, " Score: " + player.tail.length);
     player.update();
     player.show();
     food.show();
 }
 
 function keyPressed(key) {
-    if (key == engine.UP) {
-        player.dirX = 0;
-        player.dirY = -1;
+    lastDirX = player.dirs.length > 0 ? player.dirs[0].x : player.dirX;
+    lastDirY = player.dirs.length > 0 ? player.dirs[0].y : player.dirY;
+    if (key == engine.UP && lastDirY == 0) {
+        player.dirs.push({ x: 0, y: -1 });
     }
-    if (key == engine.DOWN) {
-        player.dirX = 0;
-        player.dirY = 1;
+    if (key == engine.DOWN && lastDirY == 0) {
+        player.dirs.push({ x: 0, y: 1 });
     }
-    if (key == engine.LEFT) {
-        player.dirX = -1;
-        player.dirY = 0;
+    if (key == engine.LEFT && lastDirX == 0) {
+        player.dirs.push({ x: -1, y: 0 });
     }
-    if (key == engine.RIGHT) {
-        player.dirX = 1;
-        player.dirY = 0;
+    if (key == engine.RIGHT && lastDirX == 0) {
+        player.dirs.push({ x: 1, y: 0 });
     }
 }
 

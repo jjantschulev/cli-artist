@@ -63,12 +63,12 @@ let bg = "",
 
 let createMatrix = function () {
     funcs.width = process.stdout.columns;
-    funcs.height = process.stdout.rows - 1;
+    funcs.height = process.stdout.rows;
 
     matrix = [];
-    for (let i = 0; i < funcs.height - 1; i++) {
+    for (let i = 0; i < funcs.height; i++) {
         matrix[i] = [];
-        for (let j = 0; j < funcs.width - 1; j++) {
+        for (let j = 0; j < funcs.width; j++) {
             matrix[i][j] = {
                 value: '',
                 fg: '',
@@ -82,9 +82,9 @@ let createMatrix = function () {
 let lastFGColor, lastBGColor;
 let renderMatrix = function () {
     let string = "\033[?25h";
-    for (let y = 0; y < funcs.constrain(matrix.length, 0, funcs.height - 1); y++) {
+    for (let y = 0; y < funcs.constrain(matrix.length, 0, funcs.height); y++) {
         string += "\n"
-        for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width - 1); x++) {
+        for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width); x++) {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
 
@@ -204,6 +204,13 @@ funcs.noFg = function () {
     process.stdout.write('\u001b[0m')
 }
 
+funcs.drawBorder = function (value) {
+    funcs.drawLine(0, 0, 1, 0, funcs.width, value);
+    funcs.drawLine(0, funcs.height - 2, 1, 0, funcs.width, value);
+    funcs.drawLine(0, 0, 0, 1, funcs.height, value);
+    funcs.drawLine(funcs.width - 2, 0, 0, 1, funcs.height, value);
+}
+
 module.exports = function (s, d, k, f) {
     setup = s;
     draw = d;
@@ -220,11 +227,15 @@ module.exports = function (s, d, k, f) {
         if (key === '\u0003') {
             process.exit();
         }
-        process.stdout.write(key);
         keyPressed(key);
     });
 
     // User input end
+
+    process.stdout.on('resize', () => { // resize matrix when window resizes;
+        createMatrix();
+    })
+
 
     process.stdout.write('\033[?25h')
     setup(funcs); // pass funcs here so engine can be initialised in setup
