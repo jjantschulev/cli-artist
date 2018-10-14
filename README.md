@@ -13,7 +13,7 @@ To get started, firsly import the library into your node project like so:
 
 Then initialise the engine and allow access to the library's core functionality:
 
-`engine = engine(<setup>, <draw>, <keyPressed>, <frameRate>);`
+`engine.init(<setup>, <draw>, <keyPressed>, <frameRate>);`
 
 The `setup`, `draw` and `keyPressed` parameters are required functions. 
 
@@ -21,7 +21,7 @@ The `setup` function runs at the beginning of your program, and the `draw` funct
 
 The `keyPressed` function is called whenever the user presses a key. The utf-8 representation of the key is passed as the first parameter of the function. The utf-8 encoding of the arrow keys are stored in `engine.UP`, `engine.DOWN`, `engine.LEFT` and `engine.RIGHT` for ease of use.
 
-The `frameRate` parameter is a number that defined how many times per second `draw()` is called. By default this is 30.
+The `frameRate` parameter is a number that defines how many times per second `draw()` is called. By default this is 30.
 
 ---
 ## Functions
@@ -38,6 +38,9 @@ The `frameRate` parameter is a number that defined how many times per second `dr
 * `engine.drawCircle(<x>, <y>, <r>, <char>)`  
     Draws a (sort-of) perfect circle at (x, y) with a radius of `r` of character `char`
 
+* `engine.drawBorder(<char>)`  
+    Draws a border around the window with `char` characters.
+
 * `engine.constrain(<n>, <min>, <max>)`  
    Constrains `n` between `min` and `max`
 
@@ -49,9 +52,6 @@ The `frameRate` parameter is a number that defined how many times per second `dr
 
 * `engine.fillBackground(<color>)`  
     Sets the background colour of the following characters placed
-    
-* `engine.drawBorder(<char>)`  
-    Draws a border around the window with `char` characters.
 
 ---
 ## Variables
@@ -61,6 +61,9 @@ The `frameRate` parameter is a number that defined how many times per second `dr
 
 * `engine.height`  
     The available space vertically to draw
+
+* `engine.millis`
+    The number of milliseconds since the start of the script
     
 * `engine.UP`, `engine.DOWN`, `engine.LEFT`, `engine.RIGHT`
     utf-8 representations of the arrow keys for easy detecting.
@@ -85,6 +88,7 @@ The colours that you can use in the foreground and background functions are list
 * lightmagenta
 * lightcyan
 * lightwhite
+* Or any Escape sequence that represents colours
 
 ---
 ## Example
