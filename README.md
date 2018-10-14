@@ -53,6 +53,29 @@ The `frameRate` parameter is a number that defines how many times per second `dr
     Sets the background colour of the following characters placed
 
 ---
+## Classes
+* `engine.Vector`  
+    A collection of vector-based functionality; functions include
+    
+    * `Vector.mag()`  
+        The magnitude of the vector
+
+    * `Vector.dir()`  
+        The direction of the vector
+
+    * `Vector.setMag(mag)`  
+        Set the magnitude of the vector
+    
+    * `Vector.setDir(dir)`
+        Set the direction of the vector
+
+    * `Vector.mult(n)`
+        Multiplies each axis by `n`
+
+    * `Vector.normalise()`
+        Resets magnitude to 1
+
+---
 ## Variables
 
 * `engine.width`  

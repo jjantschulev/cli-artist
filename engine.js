@@ -213,7 +213,7 @@ funcs.drawBorder = function (value) {
     funcs.drawLine(0, 0, 0, 1, funcs.height, value);
     funcs.drawLine(funcs.width - 1, 0, 0, 1, funcs.height, value);
 }
-funcs.vector = function (x, y) {
+funcs.Vector = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
     this.mag = () => Math.sqrt(x*x + y*y)
