@@ -72,8 +72,7 @@ var player
 
 var food;
 
-function setup(e) {
-    engine = e;
+function setup() {
     player = new Player();
     food = new Food();
 }

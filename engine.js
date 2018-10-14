@@ -206,6 +206,31 @@ funcs.drawBorder = function (value) {
     funcs.drawLine(0, 0, 0, 1, funcs.height, value);
     funcs.drawLine(funcs.width - 2, 0, 0, 1, funcs.height, value);
 }
+funcs.vector = function (x, y) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.mag = () => Math.sqrt(x*x + y*y)
+    this.dir = () => Math.atan(this.y / this.x);
+
+    this.setMag = mag => {
+        this.normalise();
+        this.mult(mag);
+    }
+
+    this.setDir = angle => {
+        this.x = this.mag * Math.cos(angle);
+        this.y = this.mag * Math.sin(angle);
+    }
+
+    this.mult = n => {
+        this.x *= n;
+        this.y *= n;
+    }
+
+    this.normalise = () => {
+        if (this.mag() != 0) this.mult(1 / this.mag());
+    }
+}
 
 module.exports = function (s, d, k, f) {
     setup = s;
