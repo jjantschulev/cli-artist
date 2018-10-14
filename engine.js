@@ -4,7 +4,7 @@
 
 let funcs = {}
 
-let setup, draw;
+let setup, draw, keyActions;
 
 funcs.BOX = "\u2588";
 funcs.CIRCLE = "\u26AA";
@@ -144,7 +144,7 @@ funcs.loop = function (n, min, max) {
 
 funcs.drawPoint = function (x, y, value) {
     if (y >= 0 && y < funcs.height - 1 && x >= 0 && x < funcs.width - 1) {
-        matrix[funcs.constrain(y, 0, funcs.height - 1)][funcs.constrain(x, 0, funcs.width - 1)] = {
+        matrix[funcs.constrain(Math.floor(y), 0, funcs.height - 1)][funcs.constrain(Math.floor(x), 0, funcs.width - 1)] = {
             value: value[0],
             fg: fg || "",
             bg: bg || ""
@@ -162,7 +162,7 @@ funcs.drawLine = function (x, y, dirX, dirY, length, value) {
 
 funcs.drawText = function (x, y, text) {
     for (var i = 0; i < text.length; i++) {
-        funcs.drawPoint(x + i, y, text.charAt(i));
+        funcs.drawPoint(x + i, y, text[i]);
     }
 }
 
@@ -200,24 +200,38 @@ funcs.noFg = function () {
     process.stdout.write('\u001b[0m')
 }
 
-module.exports = function (s, d) {
+module.exports = function (s, d, key) {
     setup = s;
     draw = d;
+    keyActions = key || {};
 
     process.stdout.write('\033[?25h')
     setup();
+
+    process.stdin.setRawMode( true );
+    process.stdin.resume();
+    process.stdin.setEncoding( 'utf8' );
+
     createMatrix();
     setInterval(() => {
         funcs.clear();
         draw();
+
+        process.stdin.on("data", key => {
+            if ( key === '\u0003' ) exit();
+            if (keyActions.keyPressed) keyActions.keyPressed(key)
+        })
+
         renderMatrix();
     }, 30);
 
     return funcs;
 }
 
-process.on('SIGINT', e => {
+process.on('SIGINT', e => exit())
+
+let exit = e => {
     process.stdout.write('\033[2J\u001b[0m\033[?25l');
     require('child_process').exec(process.platform == "win32" ? "cls" : "clear");
     process.exit();
-})
+}
