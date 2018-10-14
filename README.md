@@ -8,7 +8,7 @@ Well, we have. And here is a library to do just that.
 
 To get started, firsly import the library into your node project like so:
 
-`const engine = require('stdout-draw');`
+`const engine = require('cli-artist');`
 
 Then initialise the engine and allow access to the library's core functionality:
 
@@ -56,7 +56,7 @@ The `frameRate` parameter is a number that defines how many times per second `dr
 ## Classes
 * `engine.Vector`  
     A collection of vector-based functionality; functions include
-    
+
     * `Vector.mag()`  
         The magnitude of the vector
 
