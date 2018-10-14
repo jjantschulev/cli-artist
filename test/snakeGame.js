@@ -90,7 +90,7 @@ function draw () {
     player.show();
 }
 
-engine = engine(setup, draw, key => {
+engine.init(setup, draw, key => {
     switch (key) {
         case "w":
             player.dirX = 0;

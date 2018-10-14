@@ -14,4 +14,4 @@ const keyPressed = (key) => {
 
 }
 
-engine = engine(setup, draw, keyPressed, 20) // Initialise the engine
+engine.init(setup, draw, keyPressed, 20) // Initialise the engine
