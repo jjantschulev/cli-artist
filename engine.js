@@ -2,9 +2,20 @@
 
 // START RENDERING ENGINE CODE:
 
+const fs = require('fs');
+const path = require('path');
+
+let debugMode = false,
+    logVisible = false,
+    paused = false;
+
+let debugString = "";
+
 let funcs = {}
 
 let setup, draw, keyPressed, frameRate;
+
+let output = [];
 
 funcs.BOX = "\u2588";
 funcs.CIRCLE = "\u26AA";
@@ -186,7 +197,7 @@ funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-        else clr = "";
+    else clr = "";
 
     fg = clr;
 }
@@ -194,7 +205,7 @@ funcs.fillBackground = function (colour) {
     let clr = backgroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-        else clr = "";
+    else clr = "";
 
     bg = clr;
 }
@@ -216,7 +227,7 @@ funcs.drawBorder = function (value) {
 funcs.Vector = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
-    this.mag = () => Math.sqrt(x*x + y*y)
+    this.mag = () => Math.sqrt(x * x + y * y)
     this.dir = () => Math.atan(this.y / this.x);
 
     this.setMag = mag => {
@@ -238,6 +249,33 @@ funcs.Vector = function (x, y) {
         if (this.mag() != 0) this.mult(1 / this.mag());
     }
 }
+funcs.debug = {
+    enable(state) {
+        if (state) {
+            funcs.log = console.log;
+            funcs.warn = console.warn;
+            funcs.error = console.error;
+
+            console.log = (...args) => {
+                overrideConsoleFunction(args, 0);
+            }
+            console.warn = (...args) => {
+                overrideConsoleFunction(args, 1);
+            }
+            console.error = (...args) => {
+                overrideConsoleFunction(args, 2);
+            }
+
+            debugMode = true;
+        } else {
+            console.log = funcs.log;
+            console.warn = funcs.warn;
+            console.error = funcs.error;
+
+            debugMode = false;
+        }
+    }
+}
 
 funcs.millis = 0;
 // Init function used, so users script has access to engine variable like width in setup; Was not possible in draw
@@ -249,8 +287,13 @@ funcs.init = function (s, d, k, f) {
 
     process.stdout.write('\033[?25h')
 
-    createMatrix();// Setup called after matrix is created
-    setup();
+    createMatrix(); // Setup called after matrix is created
+
+    try {
+        setup();
+    } catch (e) {
+        console.error(e.stack);
+    }
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
@@ -258,14 +301,67 @@ funcs.init = function (s, d, k, f) {
 
     process.stdin.on("data", key => { // The event listener only needs to be set once. Not every frame in draw. 
         if (key === '\u0003') exit();
-        if (keyPressed) keyPressed(key);
+        if (key == '\u0009') // Tab opens log view if debug mode is enabled (`engine.debug.enabled(true)`)
+            if (debugMode) {
+                logVisible ^= 1
+            };
+        if (keyPressed) {
+            if (!logVisible) {
+                try {
+                    keyPressed(key);
+                } catch (e) {
+                    console.error(e.stack);
+                }
+            }
+        }
+        // if (logVisible && debugMode) {
+        //     if (key == "\u000D") {
+        //         try {
+        //             eval(debugString);
+        //             debugString = ""
+        //         } catch (e) {
+        //             console.error(e);
+        //         }
+        //     // } else if (key == "\u001A")  debugString.pop();
+        //     } else debugString += key.toString(); 
+
+        //     renderMatrix();
+        // }
     })
 
     process.stdout.on('resize', createMatrix); // Recreate the matrix if window resized.
 
     setInterval(() => {
-        funcs.clear();
-        draw();
+        if (logVisible) {
+
+            funcs.clear();
+
+            funcs.fillBackground("black");
+            funcs.drawRect(0, 0, funcs.width - 1, funcs.height - 1, " ");
+            funcs.fillForeground("Cyan");
+            funcs.drawText(funcs.width / 3 - 2, 2, "Debugger");
+
+            let writeLocation = 3;
+            for (let i = 0; i < output.length; i++) {
+                funcs.fillForeground(output[i].type == 0 ? 'lightblue' : output[i].type == 1 ? 'yellow' : 'red');
+                funcs.drawText(funcs.width - output[i].location.length - 2, writeLocation, output[i].location);
+                let lines = output[i].message.toString().split('\n')
+                lines.forEach(i => {
+                    funcs.drawText(3, ++writeLocation, i);
+                })
+            }
+
+        } else {
+            try {
+                if (!paused) {
+                    funcs.clear();
+                    draw();
+                }
+            } catch (e) {
+                console.error(e.stack);
+            }
+        }
+
         renderMatrix();
 
         funcs.millis = new Date().getTime() - startTime
@@ -275,11 +371,48 @@ funcs.init = function (s, d, k, f) {
 
 module.exports = funcs;
 
-
 process.on('SIGINT', e => exit())
 
 let exit = e => {
+    logVisible = false;
+    process.stdout.write('\033[?25h')
+    funcs.clear();
     process.stdout.write('\033[2J\u001b[0m\033[?25l\033c');
     require('child_process').exec(process.platform == "win32" ? "cls" : "clear");
     process.exit();
+}
+let overrideConsoleFunction = (args, type) => {
+    // override console function with custom handler to record output.
+    try {
+        throw new Error('empty');
+    } catch (e) { // get location of console.log call and record message and append to output array to be displayed when the user (if in debug mode) pressed TAB
+        args.forEach(msg => {
+            output.push({
+                message: msg,
+                location: getCallLocation(e), // get correct stack trace item [3].trim()
+                type
+            })
+        })
+    }
+}
+
+let getCallLocation = e => {
+    let split = e.stack.split(/at/)
+    let item = "";
+    for (let i of split) {
+        if (i.indexOf("(internal/modules/cjs/loader.js:") == -1) item = i;
+        else return parseItem(item);
+    }
+}
+
+let parseItem = item => {
+    return item.split(/\(|\)/)[1];
+}
+
+let dump = (...message) => {
+    message.forEach(m => {
+
+        fs.appendFileSync(path.join(__dirname, '/dump.txt'), "\n" + m)
+
+    })
 }

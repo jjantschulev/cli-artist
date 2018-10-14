@@ -113,6 +113,14 @@ The colours that you can use in the foreground and background functions are list
 * Or any Escape sequence that represents colours
 
 ---
+## Other
+* `engine.debug`  
+    A basic debugging interface that that displays log, warning or error messages. If enabled, displayes error messages when TAB key is pressed.
+
+    * `engine.debug.enabled(<enabled>)`  
+        Enables or disables the debugger
+
+---
 ## Example
 A set of examples have been provided in the 'test' folder. Run one by navigating into the directory in any terminal and run `node <example>`. 
 
