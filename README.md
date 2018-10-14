@@ -1,6 +1,6 @@
 # A drawing library for the console.
 
-Ever wanted to do some propper ASCII art? Or a game in old-style BASIC?
+Ever wanted to do some proper ASCII art? Or a game in old-style BASIC?
 Well, we have. And here is a library to do just that.
 
 ---
@@ -13,9 +13,15 @@ To get started, firsly import the library into your node project like so:
 
 Then initialise the engine and allow access to the library's core functionality:
 
-`engine = engine(<setup>, <draw>);`
+`engine = engine(<setup>, <draw>, <keyPressed>, <frameRate>);`
 
-The `setup` and `draw` parameters are required functions. The `setup` function runs at the beginning of your program, and the `draw` function loops until the program exists.
+The `setup`, `draw` and `keyPressed` parameters are required functions. 
+
+The `setup` function runs at the beginning of your program, and the `draw` function loops until the program exists. 
+
+The `keyPressed` function is called whenever the user presses a key. The utf-8 representation of the key is passed as the first parameter of the function. The utf-8 encoding of the arrow keys are stored in `engine.UP`, `engine.DOWN`, `engine.LEFT` and `engine.RIGHT` for ease of use.
+
+The `frameRate` parameter is a number that defined how many times per second `draw()` is called. By default this is 30.
 
 ---
 ## Functions
@@ -43,6 +49,9 @@ The `setup` and `draw` parameters are required functions. The `setup` function r
 
 * `engine.fillBackground(<color>)`  
     Sets the background colour of the following characters placed
+    
+* `engine.drawBorder(<char>)`  
+    Draws a border around the window with `char` characters.
 
 ---
 ## Variables
@@ -52,6 +61,9 @@ The `setup` and `draw` parameters are required functions. The `setup` function r
 
 * `engine.height`  
     The available space vertically to draw
+    
+* `engine.UP`, `engine.DOWN`, `engine.LEFT`, `engine.RIGHT`
+    utf-8 representations of the arrow keys for easy detecting.
 
 ---
 ## Colours
