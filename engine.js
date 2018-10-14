@@ -9,11 +9,14 @@ let setup, draw, keyPressed, frameRate;
 funcs.BOX = "\u2588";
 funcs.CIRCLE = "\u26AA";
 funcs.EMPTY = ' ';
+// These are needed for ease of use to easily detect arrow keys. Even p5.js has them. DO NOT DELETE
+funcs.UP = '\u001B\u005B\u0041';
+funcs.DOWN = '\u001B\u005B\u0042';
+funcs.LEFT = '\u001B\u005B\u0044';
+funcs.RIGHT = '\u001B\u005B\u0043';
 
 let matrix = []; // Matrix should not be accesible outside engine
 
-funcs.width = process.stdout.columns;
-funcs.height = process.stdout.rows - 1;
 funcs.avaliableColors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'lightblack', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightmagenta', 'lightcyan', 'lightwhite'];
 
 let foregroundColours = {
@@ -59,12 +62,12 @@ let bg = "",
 
 let createMatrix = function () {
     funcs.width = process.stdout.columns;
-    funcs.height = process.stdout.rows - 1;
+    funcs.height = process.stdout.rows;
 
     matrix = [];
-    for (let i = 0; i < funcs.height - 1; i++) {
+    for (let i = 0; i < funcs.height; i++) {
         matrix[i] = [];
-        for (let j = 0; j < funcs.width - 1; j++) {
+        for (let j = 0; j < funcs.width; j++) {
             matrix[i][j] = {
                 value: '',
                 fg: '',
@@ -78,12 +81,11 @@ let createMatrix = function () {
 let lastFGColor, lastBGColor;
 let renderMatrix = function () {
     let string = "\033[?25h";
-    for (let y = 0; y < funcs.constrain(matrix.length, 0, funcs.height - 1); y++) {
-        string += "\n"
-        for (let x = 0; x < funcs.constrain(matrix[y].length, 0, funcs.width - 1); x++) {
+    for (let y = 0; y < funcs.height; y++) {
+        for (let x = 0; x < funcs.width; x++) {
             string += matrix[y][x].fg;
             string += matrix[y][x].bg;
-            
+
             if (lastBGColor != matrix[y][x].bg || lastFGColor != matrix[y][x].fg) {
                 if (matrix[y][x].value) {
                     string += matrix[y][x].value
@@ -95,18 +97,20 @@ let renderMatrix = function () {
             } else {
                 string += matrix[y][x].value || ' ';
             }
-            
+
             lastBGColor = matrix[y][x].bg;
             lastFGColor = matrix[y][x].fg;
         }
     }
-    process.stdout.write('\033[0;0H') // move cursor to 0, 0
+    process.stdout.write('\033[0;0f') // move cursor to 0, 0
     process.stdout.write(string); // print contents of matrix
 }
 
+
+
 funcs.clear = function () {
-    for (let y = 0; y < funcs.height - 1; y++) {
-        for (let x = 0; x < funcs.width - 1; x++) {
+    for (let y = 0; y < funcs.height; y++) {
+        for (let x = 0; x < funcs.width; x++) {
             matrix[y][x] = {
                 value: '',
                 fg: '',
@@ -128,7 +132,7 @@ funcs.drawCircle = function (x, y, r, value) {
 
     var px, py;
 
-    for (let d = r; d > 0; d-= 0.5) {
+    for (let d = r; d > 0; d -= 0.5) {
         for (let i = 0; i < d * 36; i++) {
             px = Math.round((Math.sin(i) * d * 1.95) + x);
             py = Math.round(Math.cos(i) * d + y);
@@ -143,8 +147,8 @@ funcs.loop = function (n, min, max) {
 }
 
 funcs.drawPoint = function (x, y, value) {
-    if (y >= 0 && y < funcs.height - 1 && x >= 0 && x < funcs.width - 1) {
-        matrix[funcs.constrain(Math.floor(y), 0, funcs.height - 1)][funcs.constrain(Math.floor(x), 0, funcs.width - 1)] = {
+    if (y >= 0 && y < funcs.height && x >= 0 && x < funcs.width) {
+        matrix[funcs.constrain(Math.floor(y), 0, funcs.height)][funcs.constrain(Math.floor(x), 0, funcs.width)] = {
             value: value[0],
             fg: fg || "",
             bg: bg || ""
@@ -179,7 +183,7 @@ funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-    else clr = ""
+        else clr = "";
 
     fg = clr;
 }
@@ -187,7 +191,7 @@ funcs.fillBackground = function (colour) {
     let clr = backgroundColours[colour.toLowerCase()];
     if (!clr)
         if (colour[0] == "\\") clr = clr
-    else clr = ""
+        else clr = "";
 
     bg = clr;
 }
@@ -202,44 +206,48 @@ funcs.noFg = function () {
 
 funcs.drawBorder = function (value) {
     funcs.drawLine(0, 0, 1, 0, funcs.width, value);
-    funcs.drawLine(0, funcs.height - 2, 1, 0, funcs.width, value);
+    funcs.drawLine(0, funcs.height - 1, 1, 0, funcs.width, value);
     funcs.drawLine(0, 0, 0, 1, funcs.height, value);
-    funcs.drawLine(funcs.width - 2, 0, 0, 1, funcs.height, value);
+    funcs.drawLine(funcs.width - 1, 0, 0, 1, funcs.height, value);
 }
 
-module.exports = function (s, d, k, f) {
+// Init function used, so users script has access to engine variable like width in setup; Was not possible in draw
+funcs.init = function (s, d, k, f) {
     setup = s;
     draw = d;
     keyPressed = k;
     frameRate = f || 30;
 
     process.stdout.write('\033[?25h')
+
+    createMatrix();// Setup called after matrix is created
     setup();
 
-    process.stdin.setRawMode( true );
+    process.stdin.setRawMode(true);
     process.stdin.resume();
-    process.stdin.setEncoding( 'utf8' );
+    process.stdin.setEncoding('utf8');
 
-    createMatrix();
+    process.stdin.on("data", key => { // The event listener only needs to be set once. Not every frame in draw. 
+        if (key === '\u0003') exit();
+        if (keyPressed) keyPressed(key);
+    })
+
+    process.stdout.on('resize', createMatrix); // Recreate the matrix if window resized.
+
     setInterval(() => {
         funcs.clear();
         draw();
-
-        process.stdin.on("data", key => {
-            if ( key === '\u0003' ) exit();
-            if (keyPressed) keyPressed(key)
-        })
-
         renderMatrix();
     }, 1000 / frameRate);
-
-    return funcs;
 }
+
+module.exports = funcs;
+
 
 process.on('SIGINT', e => exit())
 
 let exit = e => {
-    process.stdout.write('\033[2J\u001b[0m\033[?25l');
+    process.stdout.write('\033[2J\u001b[0m\033[?25l\033c');
     require('child_process').exec(process.platform == "win32" ? "cls" : "clear");
     process.exit();
 }

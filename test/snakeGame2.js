@@ -12,8 +12,10 @@ class Player {
 
     show() {
         engine.fillForeground('blue');
+        engine.fillBackground('blue');
         engine.drawPoint(this.x, this.y, engine.BOX);
         engine.fillForeground('cyan');
+        engine.fillBackground('cyan');
         this.tail.forEach(point => {
             engine.drawPoint(point.x, point.y, engine.BOX);
         })
@@ -62,6 +64,7 @@ class Food {
     }
 
     show() {
+        engine.noBg();
         engine.fillForeground('red');
         engine.drawPoint(this.x, this.y, 'o');
     }
@@ -72,8 +75,7 @@ var player
 
 var food;
 
-function setup(e) {
-    engine = e;
+function setup() {
     player = new Player();
     food = new Food();
 }
@@ -106,5 +108,4 @@ function keyPressed(key) {
         player.dirs.push({ x: 1, y: 0 });
     }
 }
-
-engine = engine(setup, draw, keyPressed, 10);
+engine.init(setup, draw, keyPressed, 10);
