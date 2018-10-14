@@ -1,4 +1,4 @@
-let engine = require('../engine');
+const engine = require('../engine');
 
 let particles = [];
 

@@ -8,8 +8,7 @@ Well, we have. And here is a library to do just that.
 
 To get started, firsly import the library into your node project like so:
 
-`let engine = require('stdout-draw');`
->**Note:** the engine must be defined as a *variable* not a constant.
+`const engine = require('stdout-draw');`
 
 Then initialise the engine and allow access to the library's core functionality:
 
