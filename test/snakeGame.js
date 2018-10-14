@@ -90,7 +90,7 @@ function draw () {
     player.show();
 }
 
-engine = engine(setup, draw, {keyPressed: key => {
+engine = engine(setup, draw, key => {
     switch (key) {
         case "w":
             player.dirX = 0;
@@ -117,4 +117,4 @@ engine = engine(setup, draw, {keyPressed: key => {
             // player.x += player.dirX; // this.fixes a bug that causes the snake to die when it is turned.
             break;
     }
-}});
+});
