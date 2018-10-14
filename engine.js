@@ -12,6 +12,8 @@ funcs.EMPTY = ' ';
 
 let matrix = []; // Matrix should not be accesible outside engine
 
+let startTime = new Date().getTime();
+
 funcs.width = process.stdout.columns;
 funcs.height = process.stdout.rows - 1;
 funcs.avaliableColors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'lightblack', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightmagenta', 'lightcyan', 'lightwhite'];
@@ -174,7 +176,6 @@ funcs.map = function (n, start1, stop1, start2, stop2) {
     return (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
 }
 
-
 funcs.fillForeground = function (colour) {
     let clr = foregroundColours[colour.toLowerCase()];
     if (!clr)
@@ -232,6 +233,8 @@ funcs.vector = function (x, y) {
     }
 }
 
+funcs.millis = 0;
+
 module.exports = function (s, d, k, f) {
     setup = s;
     draw = d;
@@ -256,6 +259,9 @@ module.exports = function (s, d, k, f) {
         })
 
         renderMatrix();
+
+        funcs.millis = new Date().getTime() - startTime
+
     }, 1000 / frameRate);
 
     return funcs;
