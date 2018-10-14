@@ -13,7 +13,7 @@ To get started, firsly import the library into your node project like so:
 
 Then initialise the engine and allow access to the library's core functionality:
 
-`engine = engine(<setup>, <draw>, <keyPressed>, <frameRate>);`
+`engine.init(<setup>, <draw>, <keyPressed>, <frameRate>);`
 
 The `setup`, `draw` and `keyPressed` parameters are required functions. 
 
