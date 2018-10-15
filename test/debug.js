@@ -1,7 +1,7 @@
 const engine = require('../engine')
 
 const setup = () => {
-    engine.debug.enable(true);
+    engine.debug.enabled(true);
 
     console.log('hello');
     console.warn('hello');
