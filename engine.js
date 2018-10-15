@@ -250,7 +250,7 @@ funcs.Vector = function (x, y) {
     }
 }
 funcs.debug = {
-    enable(state) {
+    enabled(state) {
         if (state) {
             funcs.log = console.log;
             funcs.warn = console.warn;
@@ -314,19 +314,6 @@ funcs.init = function (s, d, k, f) {
                 }
             }
         }
-        // if (logVisible && debugMode) {
-        //     if (key == "\u000D") {
-        //         try {
-        //             eval(debugString);
-        //             debugString = ""
-        //         } catch (e) {
-        //             console.error(e);
-        //         }
-        //     // } else if (key == "\u001A")  debugString.pop();
-        //     } else debugString += key.toString(); 
-
-        //     renderMatrix();
-        // }
     })
 
     process.stdout.on('resize', createMatrix); // Recreate the matrix if window resized.
@@ -343,12 +330,14 @@ funcs.init = function (s, d, k, f) {
 
             let writeLocation = 3;
             for (let i = 0; i < output.length; i++) {
-                funcs.fillForeground(output[i].type == 0 ? 'lightblue' : output[i].type == 1 ? 'yellow' : 'red');
-                funcs.drawText(funcs.width - output[i].location.length - 2, writeLocation, output[i].location);
-                let lines = output[i].message.toString().split('\n')
-                lines.forEach(i => {
-                    funcs.drawText(3, ++writeLocation, i);
-                })
+                if (output[i]) {
+                    funcs.fillForeground(output[i].type == 0 ? 'lightblue' : output[i].type == 1 ? 'yellow' : 'red');
+                    funcs.drawText(funcs.width - output[i].location.length - 2, writeLocation, output[i].location);
+                    let lines = output[i].message.toString().split('\n')
+                    lines.forEach(i => {
+                        funcs.drawText(3, ++writeLocation, i);
+                    })
+                }
             }
 
         } else {
@@ -389,7 +378,7 @@ let overrideConsoleFunction = (args, type) => {
         args.forEach(msg => {
             output.push({
                 message: msg,
-                location: getCallLocation(e), // get correct stack trace item [3].trim()
+                location: getCallLocation(e) || "", // get correct stack trace item [3].trim()
                 type
             })
         })
