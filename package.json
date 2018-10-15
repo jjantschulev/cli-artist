@@ -1,6 +1,6 @@
 {
   "name": "cli-artist",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "engine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
