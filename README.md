@@ -18,6 +18,8 @@ The `setup`, `draw` and `keyPressed` parameters are required functions.
 
 The `setup` function runs at the beginning of your program, and the `draw` function loops until the program exists. 
 
+The `draw` function runs repeatedly until the program terminates.
+
 The `keyPressed` function is called whenever the user presses a key. The utf-8 representation of the key is passed as the first parameter of the function. The utf-8 encoding of the arrow keys are stored in `engine.UP`, `engine.DOWN`, `engine.LEFT` and `engine.RIGHT` for ease of use.
 
 The `frameRate` parameter is a number that defines how many times per second `draw()` is called. By default this is 30.
